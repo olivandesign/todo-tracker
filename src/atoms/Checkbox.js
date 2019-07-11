@@ -2,18 +2,28 @@ import React from 'react';
 import styled from 'styled-components';
 
 export default function Checkbox(props) {
-  const { isChecked, isDisabled } = props;
+  const { isChecked, onClick } = props;
   const [state, setState] = React.useState({isChecked: isChecked})
   
   return(
     <label>
-      <input 
+      <Input 
         type="checkbox"
-        isChecked={state.checked}
-        isDisabled={isDisabled}
+        checked={state.isChecked}
+        onClick={onClick}
         onChange={() => {setState(!state.checked)}}
       />
-      </label>
+      <CheckboxView></CheckboxView>
+    </label>
   );
 }
+
+const Input = styled.input.attrs({ type: 'checkbox' })`
+  display: none;
+`
+
+const CheckboxView= styled.input`
+  width: 24px;
+  height: 24px;
+`
 

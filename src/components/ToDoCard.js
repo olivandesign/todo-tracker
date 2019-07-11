@@ -3,23 +3,39 @@ import Checkbox from '../atoms/Checkbox'
 import styled from 'styled-components';
 
 export default function ToDoCard(props) {
+  const { 
+    cardName, 
+    createdAt, 
+    isDone,
+    index,
+    onClick, 
+    onDragStart, 
+    onDragOver, 
+    onDragEnd 
+  } = props;
   return(
-    <CardWrapper onClick={props.onClick}>
+    <CardWrapper 
+      draggable 
+      onDragStart={onDragStart} 
+      onDragOver={onDragOver}
+      onDragEnd={onDragEnd}
+    >
       <CardInfoContainer>
         <CardName>
-          {props.cardName}
+          {cardName}
         </CardName>
         <CardCreationTime>
-          {props.cardTime}
+          {createdAt}
         </CardCreationTime>
       </CardInfoContainer>
-      <Checkbox isDisabled={false} isChecked={false} />
+      <Checkbox isChecked={isDone} onClick={() => onClick(index)}/>
     </CardWrapper>
   );
 }
 
 const CardWrapper = styled.div`
   display: flex;
+  margin: 4px 0 4px 0;
   padding: 16px;
   border: 1px solid red;
   border-radius: 4px;
