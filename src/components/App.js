@@ -13,13 +13,14 @@ class App extends React.Component {
     }
   }
 
-  handleCardClick = index => {
+  handleCheckboxChange = index => {
     const { toDoList } = this.state
     const clickedCard = toDoList[index]
     clickedCard.isDone = !clickedCard.isDone;
     toDoList[index] = clickedCard;
-
-    this.setState({ toDoList: toDoList });
+    setTimeout(() => {
+      this.setState({ toDoList: toDoList });
+    }, 300);
     localStorage.setItem('toDoList', JSON.stringify(toDoList))
   }
 
@@ -38,13 +39,11 @@ class App extends React.Component {
       day: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
-      second: 'numeric'
     };
     toDoList = [
       ...toDoList, 
       {
         cardName: inputValue, 
-        cardTime: "Created at", 
         isDone: false, 
         createdAt: `Добавлено ${currentDate.toLocaleString("ru", dateOptions)}`,
       }
@@ -93,7 +92,7 @@ class App extends React.Component {
         cardName={item.cardName}
         createdAt={item.createdAt}
         isDone={item.isDone}
-        onClick={this.handleCardClick}
+        handleCheckboxChange={this.handleCheckboxChange}
         onDragStart={() => this.onDragStart(index)}
         onDragOver={() => this.onDragOver(index)}
         onDragEnd={this.onDragEnd}
@@ -104,7 +103,36 @@ class App extends React.Component {
   render() {
     const { inputValue, toDoList, cardsView } = this.state;
     return (
-      <AppWrapper>
+      <AppContainer>
+        <NavBar>
+          <ViewToggleContainer onClick={this.handleViewToggleClick}>
+            <ViewToggle id="all">Все</ViewToggle>
+            <ViewToggle id="active">Активные</ViewToggle>
+            <ViewToggle id="done">Выполненные</ViewToggle>
+          </ViewToggleContainer>
+        </NavBar>
+        <AppBody>
+          <Description>
+            <Header>
+              Привет, Иван <br/>
+              У тебя еще {toDoList.length} задач.
+            </Header>
+          </Description>
+          <ToDoListContainer>
+            {toDoList.map((item, index) => {
+              switch (cardsView) {
+                case 'all': 
+                  return this.renderToDoCard(item, index);
+                case 'active': 
+                  return !item.isDone ? this.renderToDoCard(item, index) : null;
+                case 'done': 
+                  return item.isDone ? this.renderToDoCard(item, index) : null;
+                default: 
+                  return null;
+              }
+            })}
+          </ToDoListContainer>
+        </AppBody>
         <form onSubmit={this.handleSubmitClick}>
           <input 
             type="text"
@@ -116,43 +144,58 @@ class App extends React.Component {
             value="Add"
           />
         </form>
-        <ViewToggleContainer onClick={this.handleViewToggleClick}>
-          <ViewToggle id="all">Все</ViewToggle>
-          <ViewToggle id="active">Активные</ViewToggle>
-          <ViewToggle id="done">Выполненные</ViewToggle>
-        </ViewToggleContainer>
-        {toDoList.map((item, index) => {
-          switch (cardsView) {
-            case 'all': 
-              return this.renderToDoCard(item, index);
-            case 'active': 
-              return !item.isDone ? this.renderToDoCard(item, index) : null;
-            case 'done': 
-              return item.isDone ? this.renderToDoCard(item, index) : null;
-            default:
-              return <MessageContainer>Что-то пошло не так</MessageContainer>
-          }
-        })}
-      </AppWrapper>
+      </AppContainer>
     );
   }
 }
 
 export default App;
 
-const AppWrapper = styled.div`
+const AppContainer = styled.div`
   margin: auto;
-  width: 480px;
 `
 
 const ViewToggleContainer = styled.ul`
-
+  padding: 0px;
+  display: flex;
+  list-style-type: none;
 `
 
 const ViewToggle = styled.li`
+  margin-right: 16px;
+  opacity: 0.4;
 
+  :hover {
+    cursor: pointer;
+    opacity: 1;
+  }
 `
 
-const MessageContainer = styled.div`
+const Header = styled.h1`
+  display: block;
+  margin-bottom: 32px;
+  font-size: 32px;
+  line-height: 48px;
+`
+
+const NavBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  padding: 0px 32px;
+  border-bottom: 1px solid #F2F2F2;
+`
+
+const ToDoListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const AppBody = styled.div`
+  display: flex;
+`
+
+const Description = styled.div`
 
 `
