@@ -1,6 +1,7 @@
 import React from 'react';
 import ToDoCard from './ToDoCard';
 import styled from 'styled-components';
+import todoLogo from "../todoLogo.svg";
 
 class App extends React.Component {
   constructor(props){
@@ -35,17 +36,19 @@ class App extends React.Component {
     let { inputValue, toDoList } = this.state;
     const currentDate = new Date();
     const dateOptions = {
-      month: 'long',
       day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
+      month: 'long',
+      year: 'numeric'
+      // hour: 'numeric',
+      // minute: 'numeric',
     };
     toDoList = [
       ...toDoList, 
       {
         cardName: inputValue, 
+        cardDate: `Updated on ${currentDate.toLocaleString("en", dateOptions)}`,
+        image: '',
         isDone: false, 
-        createdAt: `Добавлено ${currentDate.toLocaleString("ru", dateOptions)}`,
       }
     ];
 
@@ -90,7 +93,7 @@ class App extends React.Component {
         key={index}
         index={index}
         cardName={item.cardName}
-        createdAt={item.createdAt}
+        cardDate={item.cardDate}
         isDone={item.isDone}
         handleCheckboxChange={this.handleCheckboxChange}
         onDragStart={() => this.onDragStart(index)}
@@ -103,21 +106,33 @@ class App extends React.Component {
   render() {
     const { inputValue, toDoList, cardsView } = this.state;
     return (
-      <AppContainer>
+      <AppWrapper>
         <NavBar>
+          <Logo> 
+            <LogoIcon logo={todoLogo}/>
+            todo list
+          </Logo>
           <ViewToggleContainer onClick={this.handleViewToggleClick}>
-            <ViewToggle id="all">Все</ViewToggle>
+            <ViewToggle id="all">Все ({toDoList.length})</ViewToggle>
             <ViewToggle id="active">Активные</ViewToggle>
             <ViewToggle id="done">Выполненные</ViewToggle>
           </ViewToggleContainer>
         </NavBar>
-        <AppBody>
-          <Description>
-            <Header>
-              Привет, Иван <br/>
-              У тебя еще {toDoList.length} задач.
-            </Header>
-          </Description>
+        <AppContainer>
+          <InputContainer>
+            <form onSubmit={this.handleSubmitClick}>
+              <input 
+                type="text"
+                value={inputValue}
+                onChange={this.handleInputChange}
+              />
+              <input type="file" />
+              <input 
+                type="submit"
+                value="Add"
+              />
+            </form>
+          </InputContainer>
           <ToDoListContainer>
             {toDoList.map((item, index) => {
               switch (cardsView) {
@@ -132,26 +147,15 @@ class App extends React.Component {
               }
             })}
           </ToDoListContainer>
-        </AppBody>
-        <form onSubmit={this.handleSubmitClick}>
-          <input 
-            type="text"
-            value={inputValue}
-            onChange={this.handleInputChange}
-          />
-          <input 
-            type="submit"
-            value="Add"
-          />
-        </form>
-      </AppContainer>
+        </AppContainer>
+      </AppWrapper>
     );
   }
 }
 
 export default App;
 
-const AppContainer = styled.div`
+const AppWrapper = styled.div`
   margin: auto;
 `
 
@@ -165,17 +169,14 @@ const ViewToggle = styled.li`
   margin-right: 16px;
   opacity: 0.4;
 
+  :last-child {
+    margin-right: 0px;
+  }
+
   :hover {
     cursor: pointer;
     opacity: 1;
   }
-`
-
-const Header = styled.h1`
-  display: block;
-  margin-bottom: 32px;
-  font-size: 32px;
-  line-height: 48px;
 `
 
 const NavBar = styled.div`
@@ -183,19 +184,42 @@ const NavBar = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 64px;
-  padding: 0px 32px;
+  padding: 0px 24px;
   border-bottom: 1px solid #F2F2F2;
 `
 
+const InputContainer = styled.div`
+  display: flex;
+  margin: 24px auto 48px;
+`
+
 const ToDoListContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 16px;
+  grid-auto-rows: minmax(100px, auto);
+  width: 100%;
+  max-width: 960px;
+  margin: auto;
+`
+
+const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
+  margin: 24px;
 `
 
-const AppBody = styled.div`
+const Logo = styled.span`
   display: flex;
+  align-items: center;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 32px;
 `
 
-const Description = styled.div`
-
+const LogoIcon = styled.div`
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  background-image: url("${props => props.logo}");
 `

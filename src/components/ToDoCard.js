@@ -5,7 +5,7 @@ import styled from 'styled-components';
 export default function ToDoCard(props) {
   const { 
     cardName, 
-    createdAt, 
+    cardDate, 
     isDone,
     index,
     handleCheckboxChange, 
@@ -25,9 +25,9 @@ export default function ToDoCard(props) {
         <CardName>
           {cardName}
         </CardName>
-        <CardCreationTime>
-          {createdAt}
-        </CardCreationTime>
+        <CardDate>
+          {cardDate}
+        </CardDate>
       </CardInfoContainer>
       <Checkbox isChecked={isDone} onChange={() => handleCheckboxChange(index)}/>
     </CardWrapper>
@@ -36,7 +36,6 @@ export default function ToDoCard(props) {
 
 const CardWrapper = styled.div`
   display: flex;
-  margin-bottom: 16px;
   padding: 16px;
   border-radius: 4px;
   background-color: white;
@@ -52,16 +51,20 @@ const CardInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  margin-right: 16px;
 `
 
 const CardName = styled.span`
   display: block;
+  flex-grow: 1;
+  margin-bottom: 8px;
   font-size: 17px;
   font-weight: 700;
   line-height: 28px;
+  word-break: break-all;
 `;
 
-const CardCreationTime = styled.span`
+const CardDate = styled.span`
   display: block;
   opacity: 0.4;
 `;
